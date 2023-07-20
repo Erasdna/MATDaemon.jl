@@ -7,6 +7,7 @@ import DaemonMode
 import MAT
 import MacroTools
 import Pkg
+import JSON
 
 using DocStringExtensions: README, TYPEDFIELDS, TYPEDSIGNATURES
 using Downloads: download
@@ -74,8 +75,8 @@ Base.@kwdef struct JLCallOptions
     f::String               = "(args...; kwargs...) -> nothing"
     "MATLAB `.mat` file containing positional and keyword arguments for calling `f`"
     infile::String          = tempname(; cleanup = true) * ".mat"
-    "MATLAB `.mat` file for writing outputs of `f` into"
-    outfile::String         = tempname(; cleanup = true) * ".mat"
+    "MATLAB `.mat` file for writing outputs of `f` into" #JSON!!
+    outfile::String         = tempname(; cleanup = true) * ".json"
     "Julia runtime binary location"
     runtime::String         = joinpath(Base.Sys.BINDIR, "julia")
     "Julia project to activate before calling `f`"
@@ -191,7 +192,13 @@ Save [`jlcall`](@ref) output results into workspace.
 function save_output(output, opts::JLCallOptions)
     # Try writing output to `opts.outfile`
     try
-        MAT.matwrite(opts.outfile, Dict{String, Any}("output" => output))
+        #MAT.matwrite(opts.outfile, Dict{String, Any}("output" => output))
+        stringdata = JSON.json(output)
+        println(output)
+        # write the file with the stringdata variable information
+        open(opts.outfile, "w") do f
+            write(f, stringdata)
+        end
     catch e
         println("* ERROR: Unable to write Julia output to .mat:\n*   ", opts.outfile, "\n")
         rm(opts.outfile; force = true)
@@ -214,7 +221,8 @@ function jlcall(f::F, opts::JLCallOptions) where {F}
     out = f(args...; kwargs...)
 
     # Save results to workspace
-    save_output(matlabify_output(out), opts)
+    #save_output(matlabify_output(out), opts)
+    save_output(out,opts)
 end
 
 """
