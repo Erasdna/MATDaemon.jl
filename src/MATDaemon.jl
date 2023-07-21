@@ -8,6 +8,7 @@ import MAT
 import MacroTools
 import Pkg
 import JSON
+#import BattMo
 
 using DocStringExtensions: README, TYPEDFIELDS, TYPEDSIGNATURES
 using Downloads: download
@@ -193,6 +194,10 @@ function save_output(output, opts::JLCallOptions)
     # Try writing output to `opts.outfile`
     try
         #MAT.matwrite(opts.outfile, Dict{String, Any}("output" => output))
+        #JSON.lower(c::BattMo.ControllerCV)=[
+        #    c.policy,c.time,c.control_time,c.target,c.target_is_voltage,c.mode
+        #]
+        #JSON.lower(policy::BattMo.SimpleCVPolicy)=[policy.current_function, policy.voltage]
         stringdata = JSON.json(output)
         println(output)
         # write the file with the stringdata variable information
