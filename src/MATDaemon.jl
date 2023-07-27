@@ -108,6 +108,8 @@ Base.@kwdef struct JLCallOptions
     gc::Bool                = true
     "Print debugging information"
     debug::Bool             = false
+    "MATDaemon install source"
+    source::String          = "MATDaemon"
 end
 
 matlabify(opts::JLCallOptions) = Dict{String, Any}(string(k) => matlabify(getproperty(opts, k)) for k in fieldnames(JLCallOptions))

@@ -310,7 +310,7 @@ function init_workspace(opts)
     %TODO: Add option to provide MATDaemon path!!!!
     install_script = build_julia_script(opts, 'Pkg', {
         'println("* Installing MATDaemon...\n")'
-        sprintf('Pkg.develop(path=%s"; io = %s)',opts.source, jl_maybe_stdout(opts.debug))
+        sprintf('Pkg.add(url=%s; io = %s)',opts.source, jl_maybe_stdout(opts.debug))
     });
 
     try_run(opts, install_script, 'client', 'Running `MATDaemon` install script');
