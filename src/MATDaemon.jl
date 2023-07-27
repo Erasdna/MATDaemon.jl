@@ -8,7 +8,6 @@ import MAT
 import MacroTools
 import Pkg
 import JSON
-#import BattMo
 
 using DocStringExtensions: README, TYPEDFIELDS, TYPEDSIGNATURES
 using Downloads: download
@@ -58,6 +57,7 @@ matlabify_pairs(xs) = Dict{String, Any}(string(k) => matlabify(v) for (k, v) in 
 matlabify_output(x) = Any[matlabify(x)] # default
 matlabify_output(::Nothing) = Any[]
 matlabify_output(x::Tuple) = Any[map(matlabify, x)...]
+
 
 juliafy_args(xs::Array{Any}) = vec(xs)
 juliafy_kwargs(xs::Dict{String, Any}) = Pair{Symbol, Any}[Symbol(k) => v for (k, v) in xs]
@@ -199,7 +199,6 @@ function save_output(output, opts::JLCallOptions)
         #]
         #JSON.lower(policy::BattMo.SimpleCVPolicy)=[policy.current_function, policy.voltage]
         stringdata = JSON.json(output)
-        println(output)
         # write the file with the stringdata variable information
         open(opts.outfile, "w") do f
             write(f, stringdata)

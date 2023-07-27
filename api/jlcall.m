@@ -270,6 +270,7 @@ function [f_args, opts] = parse_inputs(varargin)
     addParameter(p, 'shutdown', false, @(x) validateattributes(x, {'logical'}, {'scalar'}));
     addParameter(p, 'gc', true, @(x) validateattributes(x, {'logical'}, {'scalar'}));
     addParameter(p, 'debug', false, @(x) validateattributes(x, {'logical'}, {'scalar'}));
+    addParameter(p, 'source', 'MATDaemon', @ischar);
 
     parse(p, varargin{:});
     opts = p.Results;
@@ -305,9 +306,11 @@ function init_workspace(opts)
     %     'println("* Installing MATDaemon...\n")'
     %     sprintf('Pkg.add("MATDaemon"; io = %s)', jl_maybe_stdout(opts.debug))
     % });
+
+    %TODO: Add option to provide MATDaemon path!!!!
     install_script = build_julia_script(opts, 'Pkg', {
         'println("* Installing MATDaemon...\n")'
-        sprintf('Pkg.develop(path="MATDaemon.jl"; io = %s)', jl_maybe_stdout(opts.debug))
+        sprintf('Pkg.develop(path=%s"; io = %s)',opts.source, jl_maybe_stdout(opts.debug))
     });
 
     try_run(opts, install_script, 'client', 'Running `MATDaemon` install script');
